@@ -1,0 +1,64 @@
+# Import required libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+# Import libraries for prediction
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+#loading the dataset
+data = pd.read_csv("/content/diabetes.csv")
+data
+#check missing values
+sns.heatmap(data.isnull())
+# Display the first few rows of the dataset
+print(data.head())
+# Basic statistics of the dataset
+print(data.describe())
+#Co relation Matrix
+correlation = data.corr()
+print (correlation)
+# Pairplot to visualize relationships between variables
+sns.pairplot(data, hue='Outcome')
+plt.suptitle("Pairplot of Diabetes Data", y=1.02)
+plt.show()
+# Create a heatmap using seaborn
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Heatmap')
+plt.show()
+#Visualize the distribution of the target variable 'Outcome'
+sns.countplot(data, x='Outcome')
+plt.title('Distribution of Outcome (0: No Diabetes, 1: Diabetes)')
+plt.show()
+# Age distribution among diabetic and non-diabetic patients
+plt.figure(figsize=(10, 6))
+sns.histplot(data, x='Age', hue='Outcome', element='step', stat='density', common_norm=False, bins=30)
+plt.title('Age Distribution among Diabetic and Non-diabetic Patients')
+plt.show()
+plt.figure(figsize=(10, 6))
+sns.histplot(data, x='Glucose', hue='Outcome', element='step', stat='density', common_norm=False, bins=30)
+plt.title('Glucose Levels Distribution among Diabetic and Non-diabetic Patients')
+plt.show()
+plt.figure(figsize=(10, 6))
+sns.histplot(data, x='BMI', hue='Outcome', element='step', stat='density', common_norm=False, bins=30)
+plt.title('BMI Distribution among Diabetic and Non-diabetic Patients')
+plt.show()
+plt.figure(figsize=(10, 6))
+sns.boxplot(data, x='Outcome', y='Insulin')
+plt.title('Insulin Levels by Diabetes Outcome')
+plt.show()
+#Train test split
+X =data.drop("Outcome",axis=1)
+Y =data[ 'Outcome']
+X_train,X_test,Y_train,Y_test =train_test_split(X,Y,test_size=0.2)
+#training the model
+model= LogisticRegression()
+model.fit(X_train,Y_train)
+#Making prediction
+prediction = model.predict(X_test)
+prediction
+#Accuracy test
+accuracy = accuracy_score(prediction,Y_test)
+print(accuracy)
